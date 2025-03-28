@@ -27,6 +27,7 @@ export default {
     operate: String
   },
   computed: {
+    // TODO 分页问题：前端静态 or 后端模拟？
     tableOption() {
       const {node: {name}, type, ip, operate} = this
       return new FastTableOption({
@@ -40,6 +41,13 @@ export default {
         enableMulti: false,
         enableColumnFilter: false,
         lazyLoad: operate !== 'tableView',
+        style: {
+          flexHeight: true
+        },
+        // 刚更新完后再刷新，设备有时反应不过来，给的还是旧数据，这里虽然可以缓解，但是体验不好
+        // beforeLoad: () => {
+        //   return new Promise(resolve => setTimeout(resolve, 1000))
+        // },
         loadSuccess: ({data}) => {
           return Promise.resolve({
             records: data,
@@ -61,7 +69,7 @@ export default {
                 continue
               }
               // 如果可写,并且已更改，则加，防止SNMP 写失败(无写权限)
-              const canWrite = config.hasOwnProperty(key) && config[key] && config[key].editable === true
+              const canWrite = Object.prototype.hasOwnProperty.call(config, key) && config[key] && config[key].editable === true
               const changed = r[key] !== rows[i][key]
               if (canWrite && changed) {
                 newR[key] = r[key]
@@ -93,6 +101,9 @@ export default {
           columns.push(CompUtil.getTableColumnComponent(fieldNode))
         })
       }
+      if(columns.length > 0) {
+        columns.unshift(CompUtil.getTableIndexColumn())
+      }
       return columns;
     }
   },
@@ -103,5 +114,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
+.table-view {
+  height: 100%;
+}
 </style>

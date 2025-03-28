@@ -63,6 +63,17 @@ const TABLE_COLUMN_COMPONENT_FN = (nodeData) => {
     return MAP[componentType]
 }
 
+export function getTableIndexColumn() {
+    return {
+        name: 'index',
+        component: 'fast-table-column',
+        props: {
+            label: '序号',
+            width: 120
+        }
+    }
+}
+
 export function getTableColumnComponent(nodeData) {
     return TABLE_COLUMN_COMPONENT_FN(nodeData)
 }

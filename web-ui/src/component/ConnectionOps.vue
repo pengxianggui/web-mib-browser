@@ -1,10 +1,10 @@
 <template>
   <div class="connection-ops padding-10">
-    <el-select class="select" v-model="ip" @change="handleChange" placeholder="请选择设备">
+    <el-select class="select" size="small" v-model="ip" @change="handleChange" placeholder="请选择设备">
       <el-option v-for="c in connections" :key="c.ip + c.port" :label="c.ip + ':' + c.port" :value="c.ip"></el-option>
     </el-select>&nbsp;
-    <el-button type="primary" @click="addOrUpdate" v-if="this.ip">更新</el-button>
-    <el-button type="primary" @click="addOrUpdate">新增</el-button>
+    <el-button type="primary" size="small" @click="addOrUpdate" v-if="this.ip">更新</el-button>
+    <el-button type="primary" size="small" @click="addOrUpdate">新增</el-button>
   </div>
 </template>
 
@@ -22,6 +22,11 @@ export default {
     return {
       connections: [],
       ip: this.value
+    }
+  },
+  watch: {
+    value(newV) {
+      this.ip = newV
     }
   },
   mounted() {

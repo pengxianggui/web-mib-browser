@@ -54,6 +54,13 @@ public class ApiController {
                 }
             }
         }
+        // TODO for test
+        Connection connection = new Connection();
+        connection.setIp("192.168.199.139");
+        connection.setPort(161);
+        connection.setCommunity("saisi");
+        connection.setVersion("2");
+        addConnection(connection);
     }
 
     @GetMapping(value = "/mib/types")

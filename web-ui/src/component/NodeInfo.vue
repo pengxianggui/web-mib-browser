@@ -9,8 +9,9 @@
         <el-tag :type="node.canWrite ? 'success' : 'danger'">{{node.canWrite ? '是' : '否'}}</el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="读写状态">{{node.accessDesc}}</el-descriptions-item>
+<!--      <el-descriptions-item label="状态描述">{{node.statusDesc}}</el-descriptions-item>-->
       <el-descriptions-item label="值类型">{{node.valueType}}</el-descriptions-item>
-      <el-descriptions-item label="简述">{{node.briefDescription}}</el-descriptions-item>
+      <el-descriptions-item label="简述" v-if="node.briefDescription">{{node.briefDescription}}</el-descriptions-item>
       <el-descriptions-item label="详述">{{node.description}}</el-descriptions-item>
     </el-descriptions>
   </div>

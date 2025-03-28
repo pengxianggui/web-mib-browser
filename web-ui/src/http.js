@@ -3,7 +3,7 @@ import {Message} from 'element-ui';
 
 const http = axios.create({
     baseURL: process.env.VUE_APP_MODE === 'toBackend' ? '' : '/api',
-    timeout: 10000
+    timeout: 60000
 });
 
 http.interceptors.request.use(

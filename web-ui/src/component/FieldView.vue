@@ -1,6 +1,7 @@
 <template>
   <div class="field-view">
-    <el-input v-model="index" placeholder="请输入index值" required></el-input>
+    <!--    TODO 样式-->
+    <el-input v-model="index" placeholder="输入index值" clearable required style="width: 130px;"></el-input>&nbsp;
     <component :is="component.component" v-bind="component.props"
                v-model="value" style="width: 400px;"></component>&nbsp;
 
@@ -40,6 +41,10 @@ export default {
   },
   methods: {
     doGet() {
+      if (!this.index) {
+        this.$message.error("index值不能为空")
+        return
+      }
       const nodeName = this.node.name + "." + this.index
       http.get(`${this.type}/getSingleData?ip=${this.ip}&nodeName=${nodeName}`).then(res => {
         this.value = res.data
@@ -59,5 +64,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
+.field-view {
+  display: flex;
+}
 </style>
