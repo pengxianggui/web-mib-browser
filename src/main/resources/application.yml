@@ -1,13 +1,13 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 spring:
   main:
     allow-circular-references: true
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/web_mib_browser?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: 123456
+    url: jdbc:mysql://${DB_IP:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:web_mib_browser}?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:123456}
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
