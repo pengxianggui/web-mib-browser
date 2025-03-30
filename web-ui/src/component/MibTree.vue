@@ -1,6 +1,7 @@
 <template>
   <div class="mib-tree padding-5">
     <div class="opr" v-if="type">
+      <el-button type="text" class="el-icon-refresh" @click="getTreeData(type, true)"></el-button>
       <el-input class="search" v-model="filterText" size="small" clearable placeholder="过滤"></el-input>
       <el-button type="text" class="el-icon-arrow-down" @click="expandAll"></el-button>
       <el-button type="text" class="el-icon-arrow-left" @click="collapseAll"></el-button>
@@ -35,7 +36,7 @@
       </ul>
     </el-popover>
 
-    <node-info class="node-info el-card" :node="selectNode" :column="1" v-if="selectNode.name"></node-info>
+    <node-info class="node-info el-card" :node="selectNode" :column="1" v-if="selectNode"></node-info>
   </div>
 </template>
 
@@ -57,7 +58,7 @@ export default {
         label: 'name',
         children: 'children'
       },
-      selectNode: {},
+      selectNode: null,
       nodeMenu: {
         visible: false,
         operates: [],
@@ -67,6 +68,11 @@ export default {
   },
   watch: {
     type(newV) {
+      if (!newV) {
+        this.treeData = []
+        this.nodeClick(null)
+        return;
+      }
       this.getTreeData(newV)
     },
     filterText(newV) {
@@ -74,11 +80,11 @@ export default {
     }
   },
   methods: {
-    getTreeData(type) {
+    getTreeData(type, invalidCache = false) {
       if (!type) {
         return;
       }
-      $http.get(`/mib/${type}/tree`).then(res => {
+      $http.get(`/mib/${type}/tree?invalidCache=${invalidCache}`).then(res => {
         this.treeData = [res.data]
       })
     },
@@ -107,6 +113,9 @@ export default {
       this.$emit('nodeClick', nodeData)
     },
     setActiveNode(nodeName) {
+      if (this.treeData.length === 0) {
+        return;
+      }
       this.$refs.tree.setCurrentKey(nodeName)
       const node = this.$refs.tree.getNode(nodeName)
       this.filterText = nodeName

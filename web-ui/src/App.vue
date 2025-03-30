@@ -94,9 +94,9 @@ export default {
       window.history.pushState({}, '', url)
     },
     nodeClick(nodeData) {
-      this.selectNode = nodeData
-      this.activeTableName = this.selectNode.name
-      this.updateQueryParam("selectNodeName", nodeData.name)
+      this.selectNode = nodeData;
+      this.activeTableName = nodeData ? nodeData.name : null;
+      this.updateQueryParam("selectNodeName", this.activeTableName)
     },
     executeOperate(nodeData, operate) {
       if (!this.ip) {
@@ -116,13 +116,8 @@ export default {
         this.tabPanels.push(panel)
       }
       this.activeTableName = key
-      this.$nextTick(() => {
-        const ref = Array.isArray(this.$refs[key]) ? this.$refs[key][0] : this.$refs[key]
-        ref.execute(operate)
-      })
     },
     handleTabsEdit(targetName, action) {
-      console.log(targetName, action)
       if (action !== 'remove') {
         return;
       }
@@ -159,6 +154,7 @@ $headHeight: 40px;
     height: 100%;
     border-right: 1px solid #d5d5d5;
     background-color: #e6f5ff;
+
     & * {
       background-color: transparent;
     }
@@ -187,6 +183,7 @@ $headHeight: 40px;
         .el-tabs__new-tab {
           display: none;
         }
+
         .el-tabs__content {
           height: calc(100% - 60px);
 

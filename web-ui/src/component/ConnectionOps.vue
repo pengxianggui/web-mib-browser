@@ -3,15 +3,14 @@
     <el-select class="select" size="small" v-model="ip" @change="handleChange" placeholder="请选择设备">
       <el-option v-for="c in connections" :key="c.ip + c.port" :label="c.ip + ':' + c.port" :value="c.ip"></el-option>
     </el-select>&nbsp;
-    <el-button type="primary" size="small" @click="addOrUpdate" v-if="this.ip">更新</el-button>
-    <el-button type="primary" size="small" @click="addOrUpdate">新增</el-button>
+    <el-button type="primary" size="small" @click="toOpsConnection">连接管理</el-button>
   </div>
 </template>
 
 <script>
 import http from "@/http";
 import {util} from 'fast-crud-ui'
-import ConnectionForm from "@/component/ConnectionForm.vue";
+import ConnectionManager from "./ConnectionManager.vue";
 
 export default {
   name: "ConnectionOps",
@@ -38,34 +37,18 @@ export default {
         this.connections = res.data;
       })
     },
-    addOrUpdate() {
-      const connection = this.connections.find(c => c.ip === this.ip)
+    toOpsConnection() {
       util.openDialog({
-        component: ConnectionForm,
-        props: {
-          value: connection
-        },
+        component: ConnectionManager,
         dialogProps: {
-          title: this.ip ? '更新设备' : '新增设备',
-          width: '50%',
-          buttons: [{
-            text: '确定',
-            type: 'primary',
-            onClick: (instance) => instance.submit()
-          }, {
-            text: '取消',
-            onClick: (/*instance*/) => {
-              return Promise.reject();
-            }
-          }]
+          title: '连接管理',
+          width: '80%',
+          beforeClose: (done) => {
+            this.initConnections()
+            done()
+          }
         }
-      }).then(conn => {
-        this.ip = conn.ip;
-        this.handleChange()
-        this.initConnections()
-      }).catch(err => {
-        console.error(err)
-      });
+      })
     },
     handleChange() {
       this.$emit('input', this.ip);

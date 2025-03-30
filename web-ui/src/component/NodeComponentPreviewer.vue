@@ -1,10 +1,5 @@
 <template>
   <div class="node-component-previewer">
-<!--    <el-divider content-position="left">节点信息</el-divider>-->
-<!--    <node-info class="padding-5" :node="node" :column="4"></node-info>-->
-
-<!--    <el-divider content-position="left">组件预览</el-divider>-->
-<!--    <div class="preview">-->
       <table-view :type="type" :ip="ip" :node="node" :operate="operate"
                   v-if="node.nodeType === 'Table' || node.nodeType === 'Entry' || (node.nodeType === 'Field' && operate === 'tableView')"></table-view>
       <field-view :type="type" :ip="ip" :node="node" v-else-if="node.nodeType === 'Field'"></field-view>
@@ -34,12 +29,6 @@ export default {
     },
     ip: String,
     operate: String
-  },
-  methods: {
-    execute(operate) {
-      console.log(operate)
-      // TODO
-    }
   }
 }
 </script>

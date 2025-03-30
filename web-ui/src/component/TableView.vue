@@ -41,6 +41,10 @@ export default {
         enableMulti: false,
         enableColumnFilter: false,
         lazyLoad: operate !== 'tableView',
+        pagination: {
+          layout: 'total',
+          size: 100000
+        },
         style: {
           flexHeight: true
         },
@@ -57,7 +61,6 @@ export default {
         loadFail: () => Promise.reject(), // 禁用内置错误提示
         updateFail: () => Promise.reject(), // 禁用内置错误提示
         beforeUpdate: ({fatRows, rows, editRows}) => {
-          // debugger
           const postData = []
           const config = fatRows[0].config
           for (let i = 0; i < editRows.length; i++) {

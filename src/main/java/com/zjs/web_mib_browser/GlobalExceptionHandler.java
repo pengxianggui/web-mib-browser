@@ -3,6 +3,7 @@ package com.zjs.web_mib_browser;
 import com.zjs.mibparser.snmp.SnmpRespException;
 import com.zjs.mibparser.snmp.VerifyNotPassException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -32,6 +33,12 @@ public class GlobalExceptionHandler {
     public ApiRes handleException(IllegalArgumentException e, HttpServletResponse response) {
         log.error("参数错误：", e);
         return ApiRes.error(e.getMessage(), e.getStackTrace());
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ApiRes handleDuplicateKeyException(DuplicateKeyException e, HttpServletResponse response) {
+        log.error("数据库约束错误：", e.getMessage());
+        return ApiRes.error("数据约束错误:" + e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

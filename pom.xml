@@ -14,6 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-boot.version>2.6.8</spring-boot.version>
     <mib-parser.version>1.0-SNAPSHOT</mib-parser.version>
+    <fast-crud.version>1.0.0-SNAPSHOT</fast-crud.version>
   </properties>
 
   <dependencies>
@@ -26,6 +27,21 @@
       <groupId>com.zjs.mib-parser</groupId>
       <artifactId>mib-parser</artifactId>
       <version>${mib-parser.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.pengxianggui</groupId>
+      <artifactId>fast-crud-spring-boot-starter</artifactId>
+      <version>${fast-crud.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.pengxianggui</groupId>
+      <artifactId>fast-crud-auto-generator</artifactId>
+      <version>${fast-crud.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.33</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

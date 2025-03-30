@@ -1,6 +1,5 @@
 <template>
   <div class="field-view">
-    <!--    TODO 样式-->
     <el-input v-model="index" placeholder="输入index值" clearable required style="width: 130px;"></el-input>&nbsp;
     <component :is="component.component" v-bind="component.props"
                v-model="value" style="width: 400px;"></component>&nbsp;
