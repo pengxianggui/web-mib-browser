@@ -1,22 +1,20 @@
 package com.zjs.web_mib_browser.controller;
 
 import com.zjs.web_mib_browser.service.ConnectionService;
-import com.zjs.web_mib_browser.domain.Connection;
+import io.github.pengxianggui.crud.dynamic.Crud;
+import io.github.pengxianggui.crud.dynamic.CrudService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import io.github.pengxianggui.crud.BaseController;
 
 import javax.annotation.Resource;
 
+@Crud
 @RestController
 @RequestMapping("connection")
-public class ConnectionController extends BaseController<Connection>{
+public class ConnectionController {
 
+    @CrudService
     @Resource
     private ConnectionService connectionService;
-
-    public ConnectionController(ConnectionService connectionService) {
-        super(connectionService);
-    }
 
 }
