@@ -165,6 +165,7 @@ $headHeight: 40px;
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow: hidden;
     //height: calc(100% - $headHeight);
 
     & > .head {
