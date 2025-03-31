@@ -15,7 +15,8 @@
     "fast-crud-ui": "^1.1.6",
     "sass": "^1.86.0",
     "sass-loader": "^16.0.5",
-    "vue": "^2.7.16"
+    "vue": "^2.7.16",
+    "nprogress": "^0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
