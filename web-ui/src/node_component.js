@@ -52,7 +52,7 @@ const TABLE_COLUMN_COMPONENT_FN = (nodeData) => {
         },
     }
     const componentType = nodeData.component.type
-    if (!nodeData.canWrite || Object.keys(MAP).indexOf(componentType) < 0) {
+    if (Object.keys(MAP).indexOf(componentType) < 0) {
         return {
             name: nodeData.name,
             component: 'fast-table-column',
@@ -60,7 +60,11 @@ const TABLE_COLUMN_COMPONENT_FN = (nodeData) => {
         }
     }
 
-    return MAP[componentType]
+    const meta = MAP[componentType]
+    if (!nodeData.canWrite) {
+        meta.editable = false
+    }
+    return meta;
 }
 
 export function getTableIndexColumn() {
