@@ -5,5 +5,7 @@ import com.zjs.web_mib_browser.domain.Connection;
 
 public interface ConnectionService extends BaseService<Connection> {
 
+    void reachableDetect();
+
     Connection getByIp(String ip);
 }

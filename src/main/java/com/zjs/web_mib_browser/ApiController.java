@@ -54,6 +54,7 @@ public class ApiController {
 
     @GetMapping(value = "/connections")
     public ApiRes<List<Connection>> getConnections() {
+        // TODO 通过ip telnet查询设备的真实设备类型，然后在Connection中体现，方便前端根据type筛选连接
         return ApiRes.ok(connectionService.list());
     }
 

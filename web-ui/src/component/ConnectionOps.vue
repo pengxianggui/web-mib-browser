@@ -1,7 +1,10 @@
 <template>
   <div class="connection-ops padding-10">
     <el-select class="select" size="small" v-model="ip" @change="handleChange" placeholder="请选择设备">
-      <el-option v-for="c in connections" :key="c.ip + c.port" :label="c.ip + ':' + c.port" :value="c.ip"></el-option>
+      <el-option v-for="c in connections" :key="c.ip + c.port" :label="c.ip + ':' + c.port" :value="c.ip">
+        <i class="el-icon-s-opportunity" :class="c.reachable ? 'online': 'offline'"></i>&nbsp;
+        <span>{{ c.ip }}:{{ c.port }}</span>
+      </el-option>
     </el-select>&nbsp;
     <el-button type="primary" size="small" @click="toOpsConnection">连接管理</el-button>
   </div>

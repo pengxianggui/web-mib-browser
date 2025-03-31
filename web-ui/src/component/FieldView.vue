@@ -50,6 +50,10 @@ export default {
       })
     },
     doSet() {
+      if (!this.index) {
+        this.$message.error("index值不能为空")
+        return
+      }
       const nodeName = this.node.name + "." + this.index
       http.post(`${this.type}/setSingleData?ip=${this.ip}`, {
         name: nodeName,

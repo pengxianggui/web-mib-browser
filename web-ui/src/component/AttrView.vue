@@ -3,7 +3,7 @@
     <component :is="component.component" v-bind="component.props"
                v-model="value" style="width: 400px;"></component>&nbsp;
 
-    <el-button type="danger" :disabled="component.props.disabled || value === null" @click="doSet">Set</el-button>
+    <el-button type="danger" :disabled="component.props.disabled" @click="doSet">Set</el-button>
     <el-button type="primary" plain @click="doGet">Get</el-button>
   </div>
 </template>

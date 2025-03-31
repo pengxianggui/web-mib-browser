@@ -5,6 +5,7 @@ import App from './App.vue'
 import http from "@/http";
 import "element-ui/lib/theme-chalk/index.css";
 import 'fast-crud-ui/lib/style.css';
+import '../assets/main.scss'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)

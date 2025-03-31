@@ -11,6 +11,7 @@
       <el-descriptions-item label="读写状态">{{node.accessDesc}}</el-descriptions-item>
 <!--      <el-descriptions-item label="状态描述">{{node.statusDesc}}</el-descriptions-item>-->
       <el-descriptions-item label="值类型">{{node.valueType}}</el-descriptions-item>
+      <el-descriptions-item label="值约束" v-if="node.valueConstraintDesc">{{node.valueConstraintDesc}}</el-descriptions-item>
       <el-descriptions-item label="简述" v-if="node.briefDescription">{{node.briefDescription}}</el-descriptions-item>
       <el-descriptions-item label="详述">{{node.description}}</el-descriptions-item>
     </el-descriptions>
