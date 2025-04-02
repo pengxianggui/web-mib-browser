@@ -1,4 +1,4 @@
-package com.zjs.web_mib_browser;
+package com.zjs.web_mib_browser.apires;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;

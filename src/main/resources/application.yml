@@ -19,7 +19,13 @@ spring:
 logging:
   file:
     path: ${LOG_DIR:${user.dir}/logs}
-    name: ${LOG_FILE_NAME:web_mib_browser}.log
+    name: ${logging.file.path}/${LOG_FILE_NAME:web_mib_browser}.log
 
 fast-crud:
   upload-dir: ${UPLOAD_DIR:${user.dir}/upload}
+
+web-socket:
+  path: /socket
+
+task:
+  connection-detect-freq: 60000 # 检测连接连通性的频率(ms)

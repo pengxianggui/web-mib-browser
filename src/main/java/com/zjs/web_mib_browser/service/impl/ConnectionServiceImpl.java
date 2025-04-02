@@ -1,12 +1,12 @@
 package com.zjs.web_mib_browser.service.impl;
 
-import cn.hutool.core.lang.Assert;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.StrUtil;
 import com.zjs.web_mib_browser.SnmpContextManager;
 import com.zjs.web_mib_browser.domain.Connection;
 import com.zjs.web_mib_browser.mapper.ConnectionMapper;
 import com.zjs.web_mib_browser.service.ConnectionService;
+import com.zjs.web_mib_browser.socket.MsgWebSocketHandler;
 import io.github.pengxianggui.crud.BaseServiceImpl;
 import io.github.pengxianggui.crud.query.Pager;
 import io.github.pengxianggui.crud.query.PagerQuery;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +30,8 @@ public class ConnectionServiceImpl extends BaseServiceImpl<Connection, Connectio
     private ConnectionMapper connectionMapper;
     @Resource
     private SnmpContextManager snmpContextManager;
+    @Resource
+    private MsgWebSocketHandler socketHandler;
 
     @Override
     public void init() {
@@ -66,16 +69,21 @@ public class ConnectionServiceImpl extends BaseServiceImpl<Connection, Connectio
         return connections;
     }
 
-    @Scheduled(fixedRate = 1000 * 60 * 5)
+    @Scheduled(fixedRateString = "${task.connection-detect-freq: 180000}")
     public void reachableDetect() {
-        List<Connection> connections = list();
-        connections.forEach(connection -> IP_REACHABLE_CACHE.put(connection.getIp(), NetUtil.ping(connection.getIp())));
-    }
-
-    public boolean reachableDetect(Connection connection) {
-        Assert.notNull(connection.getIp(), "ip不能为空");
-        boolean reachable = NetUtil.ping(connection.getIp());
-        return IP_REACHABLE_CACHE.put(connection.getIp(), reachable);
+        Map<String, Boolean> changedMsg = new HashMap<>();
+        list().stream().forEach(c -> {
+            Boolean oldReachable = IP_REACHABLE_CACHE.get(c.getIp());
+            Boolean newReachable = NetUtil.ping(c.getIp());
+            boolean changed = (oldReachable != newReachable);
+            if (changed) {
+                IP_REACHABLE_CACHE.put(c.getIp(), newReachable);
+                changedMsg.put(c.getIp(), newReachable);
+            }
+        });
+        if (!changedMsg.isEmpty()) {
+            socketHandler.boardcast(MsgWebSocketHandler.Type.CONNECTION_REACHABLE_REFRESH, changedMsg);
+        }
     }
 
     @Override

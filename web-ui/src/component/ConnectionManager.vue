@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import {Message} from 'element-ui'
 import {FastTableOption} from 'fast-crud-ui'
 import http from "@/http";
 
@@ -39,6 +40,7 @@ export default {
   methods: {
     ping() {
       http.post('/connection/ping').then(() => {
+        Message.success('状态刷新成功')
         this.$refs.tableOption.pageLoad()
       })
     }

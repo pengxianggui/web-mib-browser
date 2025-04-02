@@ -5,7 +5,7 @@
     <div class="body">
       <div class="head">
         <mib-type-ops v-model="type"></mib-type-ops>
-        <connection-ops v-model="ip"></connection-ops>
+        <connection-ops :ws="socketService" v-model="ip"></connection-ops>
       </div>
       <el-tabs class="main" type="card" editable :addable="false"
                v-model="activeTableName" @edit="handleTabsEdit">
@@ -30,12 +30,14 @@ import MibTypeOps from "@/component/MibTypeOps.vue";
 import ConnectionOps from "@/component/ConnectionOps.vue";
 import MibTree from "@/component/MibTree.vue";
 import NodeComponentPreviewer from "@/component/NodeComponentPreviewer.vue";
+import SocketService from "@/websocket";
 
 export default {
   name: "App",
   components: {MibTypeOps, ConnectionOps, MibTree, NodeComponentPreviewer},
   data() {
     return {
+      socketService: null,
       type: null, // mib类型
       ip: null, // 连接
       selectNode: null,
@@ -76,6 +78,9 @@ export default {
         this.$refs.mibTree.setActiveNode(selectNodeName)
       }, 2000)
     })
+
+    this.socketService = new SocketService(`ws://${window.location.host}/socket`)
+    this.socketService.connect()
   },
   methods: {
     getQueryParam(name) {
@@ -136,6 +141,11 @@ export default {
 
       this.activeTableName = activeName;
       this.tabPanels = tabs.filter(tab => tab.name !== targetName);
+    }
+  },
+  beforeDestroy() {
+    if (this.socketService) {
+      this.socketService.disconnect()
     }
   }
 }

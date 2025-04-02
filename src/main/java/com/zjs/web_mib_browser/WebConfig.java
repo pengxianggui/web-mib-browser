@@ -1,19 +1,34 @@
 package com.zjs.web_mib_browser;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zjs.web_mib_browser.socket.MsgWebSocketHandler;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * @author pengxg
  * @date 2025/3/30 10:40
  */
+@EnableWebSocket
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer, WebSocketConfigurer {
+
+    @Value("${web-socket.path:/socket}")
+    private String socketPath;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -23,5 +38,16 @@ public class WebConfig implements WebMvcConfigurer {
         // 添加自定义的 HttpMessageConverter（如果需要）
         MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
         converters.add(jsonConverter);
+    }
+
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(msgWebSocketHandler(), socketPath)
+                .setAllowedOrigins("*");
+    }
+
+    @Bean
+    public MsgWebSocketHandler msgWebSocketHandler() {
+        return new MsgWebSocketHandler(objectMapper);
     }
 }

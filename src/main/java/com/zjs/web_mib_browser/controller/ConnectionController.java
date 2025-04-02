@@ -1,6 +1,6 @@
 package com.zjs.web_mib_browser.controller;
 
-import com.zjs.web_mib_browser.ApiRes;
+import com.zjs.web_mib_browser.apires.ApiRes;
 import com.zjs.web_mib_browser.service.ConnectionService;
 import io.github.pengxianggui.crud.dynamic.Crud;
 import io.github.pengxianggui.crud.dynamic.CrudService;

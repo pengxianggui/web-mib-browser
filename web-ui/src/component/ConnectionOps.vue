@@ -11,14 +11,17 @@
 </template>
 
 <script>
+import {Notification} from 'element-ui'
 import http from "@/http";
 import {util} from 'fast-crud-ui'
 import ConnectionManager from "./ConnectionManager.vue";
+import SocketService from "@/websocket";
 
 export default {
   name: "ConnectionOps",
   props: {
-    value: String
+    value: String,
+    ws: SocketService
   },
   data() {
     return {
@@ -30,6 +33,32 @@ export default {
     value(newV) {
       this.ip = newV
     }
+  },
+  created() {
+    this.ws.on("CONNECTION_REACHABLE_REFRESH", (map) => {
+      const ips = Object.keys(map)
+      for (let i = 0; i < ips.length; i++) {
+        const ip = ips[i];
+        const newReachable = map[ip]
+        const connection = this.connections.find(c => c.ip === ip)
+        connection.reachable = newReachable
+        setTimeout(() => {
+          if (newReachable) {
+            Notification.success({
+              message: `${ip}已恢复连接`,
+              duration: 20000,
+              offset: 30
+            })
+          } else {
+            Notification.warning({
+              message: `${ip}已断开连接`,
+              duration: 20000,
+              offset: 30
+            })
+          }
+        }, i * 1000)
+      }
+    })
   },
   mounted() {
     this.initConnections();

@@ -13,6 +13,14 @@ module.exports = defineConfig({
         pathRewrite: {
           '^/api': ''
         }
+      },
+      '/socket': {
+        target: 'ws://localhost:8080',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/socket': '/socket'
+        }
       }
     }
   }
