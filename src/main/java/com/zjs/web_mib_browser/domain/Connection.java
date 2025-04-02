@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Connection {
+public class Connection implements Comparable<Connection>{
 
     private String id;
 
@@ -29,4 +29,15 @@ public class Connection {
      */
     @TableField(exist = false)
     private Boolean reachable;
+
+    @Override
+    public int compareTo(Connection o) {
+        if (this.reachable == null) {
+            return -1;
+        }
+        if (o.reachable == null) {
+            return 1;
+        }
+        return o.reachable.compareTo(this.reachable);
+    }
 }

@@ -1,23 +1,18 @@
 <template>
   <div class="container">
     <mib-tree ref="mibTree" class="tree" :type="type" @nodeClick="nodeClick"
-              @execute-operate="executeOperate"></mib-tree>
+              @execute-operate="executeMibNodeOperate"></mib-tree>
     <div class="body">
       <div class="head">
         <mib-type-ops v-model="type"></mib-type-ops>
         <connection-ops :ws="socketService" v-model="ip"></connection-ops>
       </div>
-      <el-tabs class="main" type="card" editable :addable="false"
-               v-model="activeTableName" @edit="handleTabsEdit">
-        <el-tab-pane :key="selectNode.name" :label="selectNode.name" :name="selectNode.name"
-                     :closable="false" v-if="selectNode">
-          <node-component-previewer :type="type" :node="selectNode" :ip="ip"></node-component-previewer>
+      <el-tabs class="main" type="card" editable :addable="false" v-model="activeTableName" @edit="handleTabsEdit">
+        <el-tab-pane :key="previewPanel.key" :label="previewPanel.label" :name="previewPanel.name" :closable="false">
+          <node-component-previewer :type="type" :node="selectNode" :ip="ip" v-if="selectNode"></node-component-previewer>
         </el-tab-pane>
         <el-tab-pane v-for="panel in tabPanels" :key="panel.key" :label="panel.label" :name="panel.name">
-          <node-component-previewer :ref="panel.key" :type="type"
-                                    :node="panel.node"
-                                    :ip="panel.ip"
-                                    :operate="panel.operate"></node-component-previewer>
+          <component :is="panel.component" :ref="panel.key" v-bind="panel.props"></component>
         </el-tab-pane>
       </el-tabs>
       <!--        <log-console :logs="logs"></log-console>-->
@@ -41,24 +36,15 @@ export default {
       type: null, // mib类型
       ip: null, // 连接
       selectNode: null,
-      /**
-       * 格式:
-       * {
-       *   key: '',
-       *   label: '',
-       *   name: '',
-       *   ip: '',
-       *   node: {
-       *     name: '',
-       *     oid: '',
-       *     ...
-       *   },
-       *   operate: 'get|set|tableView'
-       * }
-       */
       activeTableName: null,
-      tabPanels: [],
+      tabPanels: [], // 格式: {key: '', label: '', name: '', component: '', props: {...}}
       logs: []
+    }
+  },
+  computed: {
+    previewPanel() {
+      const name = this.selectNode ? this.selectNode.name : '点击mib节点预览'
+      return {key: name, label: name, name: name}
     }
   },
   watch: {
@@ -103,7 +89,7 @@ export default {
       this.activeTableName = nodeData ? nodeData.name : null;
       this.updateQueryParam("selectNodeName", this.activeTableName)
     },
-    executeOperate(nodeData, operate) {
+    executeMibNodeOperate(nodeData, operate) {
       if (!this.ip) {
         this.$message.error('请先选择设备')
         return
@@ -114,9 +100,13 @@ export default {
           key: key,
           label: key,
           name: key,
-          ip: this.ip,
-          node: nodeData,
-          operate: operate
+          component: 'node-component-previewer',
+          props: {
+            ip: this.ip,
+            type: this.type,
+            node: nodeData,
+            operate: operate
+          }
         }
         this.tabPanels.push(panel)
       }
@@ -139,8 +129,8 @@ export default {
         });
       }
 
-      this.activeTableName = activeName;
       this.tabPanels = tabs.filter(tab => tab.name !== targetName);
+      this.activeTableName = this.tabPanels.length === 0 ? this.previewPanel.name : activeName;
     }
   },
   beforeDestroy() {

@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -52,6 +49,7 @@ public class ConnectionServiceImpl extends BaseServiceImpl<Connection, Connectio
                 c.setReachable(IP_REACHABLE_CACHE.get(c.getIp()));
             }
         });
+        Collections.sort(pager.getRecords());
         return pager;
     }
 
@@ -66,6 +64,7 @@ public class ConnectionServiceImpl extends BaseServiceImpl<Connection, Connectio
                 c.setReachable(IP_REACHABLE_CACHE.get(c.getIp()));
             }
         });
+        Collections.sort(connections);
         return connections;
     }
 

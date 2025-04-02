@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @MapperScan("com.zjs.web_mib_browser.mapper")
 @SpringBootApplication
-public class App {
+public class Application {
     public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
+        SpringApplication.run(Application.class, args);
     }
 }
