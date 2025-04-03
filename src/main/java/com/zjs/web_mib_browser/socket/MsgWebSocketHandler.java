@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +18,10 @@ import java.util.List;
  * @date 2025-04-02 9:59
  */
 @Slf4j
+@Component
 public class MsgWebSocketHandler extends TextWebSocketHandler {
     private static final List<WebSocketSession> sessions = new ArrayList<>();
+    @Resource
     private ObjectMapper objectMapper;
 
     public MsgWebSocketHandler(ObjectMapper objectMapper) {

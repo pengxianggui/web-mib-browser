@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Connection implements Comparable<Connection>{
+public class Connection implements Comparable<Connection> {
 
     private String id;
 
@@ -19,6 +19,12 @@ public class Connection implements Comparable<Connection>{
     private String community;
 
     private String version;
+
+    private Integer sshPort;
+
+    private String sshUsername;
+
+    private String sshPassword;
 
     private LocalDateTime createdTime;
 

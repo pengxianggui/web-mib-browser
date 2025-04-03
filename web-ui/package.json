@@ -9,14 +9,17 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@xterm/addon-attach": "^0.11.0",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
     "axios": "^1.7.9",
     "core-js": "^3.8.3",
     "element-ui": "^2.15.14",
     "fast-crud-ui": "^1.1.6",
+    "nprogress": "^0.2.0",
     "sass": "^1.86.0",
     "sass-loader": "^16.0.5",
-    "vue": "^2.7.16",
-    "nprogress": "^0.2.0"
+    "vue": "^2.7.16"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

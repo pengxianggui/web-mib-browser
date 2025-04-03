@@ -2,6 +2,7 @@ package com.zjs.web_mib_browser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjs.web_mib_browser.socket.MsgWebSocketHandler;
+import com.zjs.web_mib_browser.socket.WebSSHWebSocketHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +27,13 @@ public class WebConfig implements WebMvcConfigurer, WebSocketConfigurer {
 
     @Value("${web-socket.path:/socket}")
     private String socketPath;
+    @Value(("${web-socket.ssh-path://webssh}"))
+    private String webSSHPath;
 
     @Resource
-    private ObjectMapper objectMapper;
+    private MsgWebSocketHandler msgWebSocketHandler;
+    @Resource
+    private WebSSHWebSocketHandler webSSHWebSocketHandler;
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -42,12 +47,8 @@ public class WebConfig implements WebMvcConfigurer, WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(msgWebSocketHandler(), socketPath)
+        registry.addHandler(msgWebSocketHandler, socketPath)
+                .addHandler(webSSHWebSocketHandler, webSSHPath)
                 .setAllowedOrigins("*");
-    }
-
-    @Bean
-    public MsgWebSocketHandler msgWebSocketHandler() {
-        return new MsgWebSocketHandler(objectMapper);
     }
 }

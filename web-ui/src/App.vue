@@ -5,11 +5,13 @@
     <div class="body">
       <div class="head">
         <mib-type-ops v-model="type"></mib-type-ops>
+        <span class="flex"></span>
+        <el-button type="text" icon="el-icon-postcard" @click="openTerminal(ip)"></el-button>&nbsp;
         <connection-ops :ws="socketService" v-model="ip"></connection-ops>
       </div>
       <el-tabs class="main" type="card" editable :addable="false" v-model="activeTableName" @edit="handleTabsEdit">
         <el-tab-pane :key="previewPanel.key" :label="previewPanel.label" :name="previewPanel.name" :closable="false">
-          <node-component-previewer :type="type" :node="selectNode" :ip="ip" v-if="selectNode"></node-component-previewer>
+          <node-component-previewer :type="type" :node="selectNode" :ip="ip" v-if="selectNode"/>
         </el-tab-pane>
         <el-tab-pane v-for="panel in tabPanels" :key="panel.key" :label="panel.label" :name="panel.name">
           <component :is="panel.component" :ref="panel.key" v-bind="panel.props"></component>
@@ -25,11 +27,12 @@ import MibTypeOps from "@/component/MibTypeOps.vue";
 import ConnectionOps from "@/component/ConnectionOps.vue";
 import MibTree from "@/component/MibTree.vue";
 import NodeComponentPreviewer from "@/component/NodeComponentPreviewer.vue";
+import WebSshTerm from "@/component/WebSshTerm.vue";
 import SocketService from "@/websocket";
 
 export default {
   name: "App",
-  components: {MibTypeOps, ConnectionOps, MibTree, NodeComponentPreviewer},
+  components: {MibTypeOps, ConnectionOps, MibTree, NodeComponentPreviewer, WebSshTerm},
   data() {
     return {
       socketService: null,
@@ -131,6 +134,22 @@ export default {
 
       this.tabPanels = tabs.filter(tab => tab.name !== targetName);
       this.activeTableName = this.tabPanels.length === 0 ? this.previewPanel.name : activeName;
+    },
+    openTerminal(ip) {
+      if (!ip) {
+        return;
+      }
+      const key = `SSH-${ip}`
+      this.tabPanels.push({
+        key: key,
+        name: key,
+        label: key,
+        component: 'web-ssh-term',
+        props: {
+          ip: ip
+        }
+      })
+      this.activeTableName = key
     }
   },
   beforeDestroy() {
@@ -172,9 +191,11 @@ $headHeight: 40px;
       height: $headHeight;
       line-height: $headHeight;
       display: flex;
-      justify-content: space-between;
       border-bottom: 1px solid #d5d5d5;
       background-color: aliceblue;
+      & > .flex {
+        flex: 1;
+      }
     }
 
     .main {
@@ -191,6 +212,9 @@ $headHeight: 40px;
           & > .el-tab-pane {
             height: 100%;
           }
+        }
+        .el-tabs__header {
+          margin-bottom: 0;
         }
       }
     }

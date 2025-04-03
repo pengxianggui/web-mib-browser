@@ -26,6 +26,7 @@ fast-crud:
 
 web-socket:
   path: /socket
+  ssh-path: /webssh
 
 task:
   connection-detect-freq: 60000 # 检测连接连通性的频率(ms)

@@ -11,6 +11,8 @@
         <i class="el-icon-s-opportunity" :class="row.reachable ? 'online': 'offline'"></i>
       </template>
     </fast-table-column>
+    <fast-table-column-input prop="sshUsername" label="ssh用户名"/>
+    <fast-table-column-input prop="sshPassword" label="ssh密码"/>
     <fast-table-column-date-picker prop="createdTime" label="创建时间" :editable="false"/>
     <fast-table-column-date-picker prop="updatedTime" label="更新时间" :editable="false"/>
     <template #button="{size}">

@@ -21,6 +21,14 @@ module.exports = defineConfig({
         pathRewrite: {
           '^/socket': '/socket'
         }
+      },
+      '/webssh': {
+        target: 'ws://localhost:8080',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/webssh': '/webssh'
+        }
       }
     }
   }
