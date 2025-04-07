@@ -1,10 +1,8 @@
 package com.zjs.web_mib_browser;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjs.web_mib_browser.socket.MsgWebSocketHandler;
-import com.zjs.web_mib_browser.socket.WebSSHWebSocketHandler;
+import com.zjs.web_mib_browser.socket.WebTelnetSocketHandler;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -33,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer, WebSocketConfigurer {
     @Resource
     private MsgWebSocketHandler msgWebSocketHandler;
     @Resource
-    private WebSSHWebSocketHandler webSSHWebSocketHandler;
+    private WebTelnetSocketHandler webTelnetSocketHandler;
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -48,7 +46,7 @@ public class WebConfig implements WebMvcConfigurer, WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(msgWebSocketHandler, socketPath)
-                .addHandler(webSSHWebSocketHandler, webSSHPath)
+                .addHandler(webTelnetSocketHandler, webSSHPath)
                 .setAllowedOrigins("*");
     }
 }

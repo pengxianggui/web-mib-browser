@@ -41,11 +41,17 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-        <!-- ssh连接设备 -->
+<!--        &lt;!&ndash; ssh连接设备 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.github.mwiede</groupId>-->
+<!--            <artifactId>jsch</artifactId>-->
+<!--            <version>0.2.1</version>-->
+<!--        </dependency>-->
+        <!-- Telnet -->
         <dependency>
-            <groupId>com.github.mwiede</groupId>
-            <artifactId>jsch</artifactId>
-            <version>0.2.1</version>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

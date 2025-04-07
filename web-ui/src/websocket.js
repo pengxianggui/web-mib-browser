@@ -37,9 +37,9 @@ export default class SocketService {
             console.error(error.message)
         }
 
-        setInterval(() => {
-            this.ws.send("ping")
-        }, 60000)
+        // setInterval(() => {
+        //     this.ws.send("ping")
+        // }, 60000)
     }
 
     on(type, callback) {

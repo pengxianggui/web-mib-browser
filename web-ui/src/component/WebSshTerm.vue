@@ -31,6 +31,7 @@ export default {
     })
   },
   beforeDestroy() {
+    console.log("beforeDestroy..")
     this.disconnect()
   },
   methods: {
@@ -52,6 +53,7 @@ export default {
         this.fitAddon.fit()
       })
 
+      // TODO 输入后应当借鉴iterm2的输入方式，支持上下键选历史命令、历史自动提示补全等
       let commandBuffer = '' // 行缓冲
       this.term.onData(data => {
         if (this.socket && this.connected) {
@@ -61,6 +63,12 @@ export default {
             this.socket.send(JSON.stringify({
               type: 'command',
               command: commandBuffer + '\n'  // 添加换行符表示命令结束
+            }))
+            commandBuffer = ''  // 清空缓冲区
+          } else if (data === '\t') { // 处理Tab键，提示
+            this.socket.send(JSON.stringify({
+              type: 'command',
+              command: commandBuffer + '\t'  // 添加换行符表示命令结束
             }))
             commandBuffer = ''  // 清空缓冲区
           } else if (data === '\x7f') {  // 处理退格键
