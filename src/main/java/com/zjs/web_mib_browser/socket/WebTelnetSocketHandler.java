@@ -28,7 +28,7 @@ public class WebTelnetSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        log.info("WebSSH Socket连接建立: {}", session.getUri().toString());
+        log.info("WebSSH Socket连接建立: {}", getClientIp(session));
     }
 
     @Override
@@ -50,15 +50,13 @@ public class WebTelnetSocketHandler extends TextWebSocketHandler {
             String username = connection.getSshUsername();
             String password = connection.getSshPassword();
 
-//            disconnect(session);
-
             TelnetConnection conn = new TelnetConnection(session, ip, port, username, password);
             connections.put(session.getId(), conn);
             try {
                 conn.connect();
                 session.sendMessage(new TextMessage("\r\nTelnet连接成功!\r\n"));
             } catch (Exception e) {
-                log.error("Telnet连接失败,ip:" + ip, e);
+                log.error("Telnet连接失败,设备ip:" + ip, e);
                 session.sendMessage(new TextMessage("\r\nTelnet连接失败,ip=" + ip + "\r\n"));
                 disconnect(session);
             }
@@ -70,7 +68,7 @@ public class WebTelnetSocketHandler extends TextWebSocketHandler {
                 try {
                     conn.sendCommand(command);
                 } catch (IOException e) {
-                    log.error("Telnet发送命令失败", e);
+                    log.error("Telnet发送命令失败, 客户端ip=" + getClientIp(session), e);
                     session.sendMessage(new TextMessage("\r\nTelnet发送命令失败" + "\r\n"));
                 }
             }
@@ -79,13 +77,13 @@ public class WebTelnetSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        log.error("WebSSH Socket传输错误, ip:" + session.getUri(), exception);
+        log.error("WebSSH Socket传输错误, ip:" + getClientIp(session), exception);
         disconnect(session);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        log.info("WebSSH Socket连接关闭: {}", session.getUri());
+        log.info("WebSSH Socket连接关闭: {}", getClientIp(session));
         disconnect(session);
     }
 
@@ -100,6 +98,14 @@ public class WebTelnetSocketHandler extends TextWebSocketHandler {
             }
         } catch (IOException e) {
             log.error("WebSSH Socket关闭异常", e);
+        }
+    }
+
+    private String getClientIp(WebSocketSession session) {
+        try {
+            return session.getRemoteAddress().getAddress().getHostAddress();
+        } catch (Exception e) {
+            return "UnKnow";
         }
     }
 }
