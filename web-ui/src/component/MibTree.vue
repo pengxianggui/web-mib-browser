@@ -97,7 +97,7 @@ export default {
       if (nodeType === 'Dir') {
         return 'el-icon-folder'
       } else if (nodeType === 'Table') {
-        return 'el-icon-s-grid'
+        return 'el-icon-third-biaoge'
       } else if (nodeType === 'Entry') {
         return 'el-icon-document'
       } else if (nodeType === 'Field') {
@@ -105,7 +105,7 @@ export default {
       } else if (nodeType === 'Attr') {
         return canWrite ? 'el-icon-edit' : 'el-icon-view'
       } else if (nodeType === 'Trip') {
-        return 'el-icon-s-opportunity'
+        return 'el-icon-third-yigaojing'
       }
     },
     nodeClick(nodeData/*, node*/) {

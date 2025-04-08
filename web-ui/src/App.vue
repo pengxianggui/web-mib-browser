@@ -6,8 +6,9 @@
       <div class="head">
         <mib-type-ops v-model="type"></mib-type-ops>
         <span class="flex"></span>
-        <el-button type="text" icon="el-icon-postcard" @click="openTerminal(ip)"></el-button>&nbsp;
-        <connection-ops :ws="socketService" v-model="ip"></connection-ops>
+        <el-button type="text" icon="el-icon-third-terminal-box-fill" style="color: black;"
+                   @click="openTerminal(ip)"></el-button>&nbsp;
+        <connection-ops :ws="socketService" @open-terminal="openTerminal" v-model="ip"></connection-ops>
       </div>
       <el-tabs class="main" type="card" editable :addable="false" v-model="activeTableName" @edit="handleTabsEdit">
         <el-tab-pane :key="previewPanel.key" :label="previewPanel.label" :name="previewPanel.name" :closable="false">
@@ -139,14 +140,16 @@ export default {
       if (!ip) {
         return;
       }
-      const key = `SSH-${ip}`
+      const timestamp = new Date().getTime()
+      const key = `SSH-${ip}-${timestamp}`
       this.tabPanels.push({
         key: key,
         name: key,
-        label: key,
+        label: `SSH-${ip}`,
         component: 'web-ssh-term',
         props: {
-          ip: ip
+          ip: ip,
+          id: key
         }
       })
       this.activeTableName = key
@@ -207,7 +210,7 @@ $headHeight: 40px;
         }
 
         .el-tabs__content {
-          height: calc(100% - 60px);
+          height: calc(100% - 45px);
 
           & > .el-tab-pane {
             height: 100%;

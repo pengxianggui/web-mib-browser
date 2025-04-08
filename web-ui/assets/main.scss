@@ -10,3 +10,11 @@ i.offline {
 .un-know {
   color: #cbcbcb;
 }
+
+.flex-container {
+  display: flex;
+  align-items: center;
+  & > .flex {
+    flex: 1;
+  }
+}

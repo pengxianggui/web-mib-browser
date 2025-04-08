@@ -28,7 +28,7 @@ public class WebTelnetSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        log.info("WebSSH Socket连接建立: ", session.getUri().toString());
+        log.info("WebSSH Socket连接建立: {}", session.getUri().toString());
     }
 
     @Override

@@ -3,11 +3,14 @@
     <el-select class="select" size="small" v-model="ip" @change="handleChange" clearable filterable
                placeholder="请选择设备">
       <template #prefix>
-        <i class="el-icon-s-opportunity" :class="onlineOrOffline"></i>
+        <i class="el-icon-third-dian" :class="onlineOrOffline"></i>
       </template>
-      <el-option v-for="c in connections" :key="c.ip + c.port" :label="c.ip + ':' + c.port" :value="c.ip">
-        <i class="el-icon-s-opportunity" :class="c.reachable ? 'online': 'offline'"></i>&nbsp;
+      <el-option class="flex-container" v-for="c in connections" :key="c.ip + c.port" :label="c.ip + ':' + c.port" :value="c.ip">
+        <i class="el-icon-third-dian" :class="c.reachable ? 'online': 'offline'"></i>&nbsp;
         <span>{{ c.ip }}:{{ c.port }}</span>
+        <span class="flex"></span>
+        <el-button type="text" icon="el-icon-third-terminal-box-fill" style="color: black;"
+                   @click.native.stop="$emit('open-terminal', c.ip)"></el-button>&nbsp;
       </el-option>
     </el-select>&nbsp;
     <el-button type="primary" size="small" @click="toOpsConnection">连接管理</el-button>

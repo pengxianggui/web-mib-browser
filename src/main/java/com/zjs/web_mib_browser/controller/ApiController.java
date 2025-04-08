@@ -48,8 +48,10 @@ public class ApiController {
             Tree<String> tree = mibFileService.getTree(type, invalidCache);
             return ApiRes.ok(tree);
         } catch (MibLoaderException e) {
+            log.error(e.getMessage(), e);
             return ApiRes.error("mib文件可能存在语法错误:" + e.getLog().toString(), e.getStackTrace());
         } catch (IOException e) {
+            log.error(e.getMessage(), e);
             return ApiRes.error("mib文件读取失败", e.getStackTrace());
         }
     }

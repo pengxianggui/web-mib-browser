@@ -8,14 +8,14 @@ module.exports = defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8888',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
         }
       },
       '/socket': {
-        target: 'ws://localhost:8080',
+        target: 'ws://localhost:8888',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -23,7 +23,7 @@ module.exports = defineConfig({
         }
       },
       '/webssh': {
-        target: 'ws://localhost:8080',
+        target: 'ws://localhost:8888',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

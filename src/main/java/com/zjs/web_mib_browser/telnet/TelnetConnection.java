@@ -1,5 +1,6 @@
 package com.zjs.web_mib_browser.telnet;
 
+import cn.hutool.core.util.StrUtil;
 import org.apache.commons.net.telnet.*;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -9,7 +10,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * TODO 回显问题还存在，尤其是前端tab键补全，会导致发送一条命令不完整的命令
+ * Telnet连接，处理Telnet发送、响应接收(处理回显，并不算优雅)
+ *
  * @author pengxg
  * @date 2025-04-07 13:33
  */
@@ -48,9 +50,11 @@ public class TelnetConnection {
         in = telnet.getInputStream();
         out = telnet.getOutputStream();
 
-        // 处理登录流程 TODO 如果无username或密码，应当可以继续，让用户在webssh界面输入
-        waitForAndRespond("login:", username);
-        waitForAndRespond("password:", password);
+        // 处理登录流程: 如果无username或密码，应当让用户在webssh界面输入
+        if (StrUtil.isAllNotBlank(username, password)) {
+            waitForAndRespond("login:", username);
+            waitForAndRespond("password:", password);
+        }
 
         // 启动读取线程
         readThread = new Thread(this::readFromTelnet);
@@ -110,8 +114,13 @@ public class TelnetConnection {
     public void sendCommand(String command) throws IOException {
         if (out != null && telnet.isConnected()) {
             // 如果command以\t结尾则取\t之前的内容作为lastCommand
-            lastCommand = command.endsWith("\t") ? command.substring(0, command.length() - 1) : command;
-            out.write((command + "\n").getBytes());
+//            if (command.endsWith("\t")) {
+            lastCommand = command.substring(0, command.length() - 1);
+            out.write((command).getBytes());
+//            } else {
+//                lastCommand = command;
+//                out.write((command + "\r\n").getBytes());
+//            }
             out.flush();
         }
     }
