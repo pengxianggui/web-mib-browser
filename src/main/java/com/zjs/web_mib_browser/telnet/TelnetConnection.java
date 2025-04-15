@@ -95,14 +95,9 @@ public class TelnetConnection {
                     int len = in.read(buffer);
                     if (len > 0) {
                         String data = new String(buffer, 0, len);
-                        // 处理回显，避免重复
-                        if (data.startsWith(lastCommand)) {
-                            data = data.substring(lastCommand.length());
-                        }
                         sendToWebSocket(data);
                     }
                 }
-                Thread.sleep(100);
             }
         } catch (Exception e) {
             if (!Thread.currentThread().isInterrupted()) {
@@ -113,14 +108,7 @@ public class TelnetConnection {
 
     public void sendCommand(String command) throws IOException {
         if (out != null && telnet.isConnected()) {
-            // 如果command以\t结尾则取\t之前的内容作为lastCommand
-//            if (command.endsWith("\t")) {
-            lastCommand = command.substring(0, command.length() - 1);
             out.write((command).getBytes());
-//            } else {
-//                lastCommand = command;
-//                out.write((command + "\r\n").getBytes());
-//            }
             out.flush();
         }
     }

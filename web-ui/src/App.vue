@@ -1,9 +1,12 @@
 <template>
   <div class="container">
-    <mib-tree ref="mibTree" class="tree" :type="type" @nodeClick="nodeClick"
-              @execute-operate="executeMibNodeOperate"></mib-tree>
+    <transition name="fade">
+      <mib-tree ref="mibTree" class="tree" :type="type" @nodeClick="nodeClick"
+                @execute-operate="executeMibNodeOperate" v-show="treeVisible"></mib-tree>
+    </transition>
     <div class="body">
-      <div class="head">
+      <div class="head">&nbsp;
+        <el-button icon="el-icon-s-fold" size="small" @click="() => treeVisible = !treeVisible"></el-button>
         <mib-type-ops v-model="type"></mib-type-ops>
         <span class="flex"></span>
         <el-button type="text" icon="el-icon-third-terminal-box-fill" style="color: black;"
@@ -36,6 +39,7 @@ export default {
   components: {MibTypeOps, ConnectionOps, MibTree, NodeComponentPreviewer, WebSshTerm},
   data() {
     return {
+      treeVisible: true,
       socketService: null,
       type: null, // mib类型
       ip: null, // 连接
@@ -194,6 +198,7 @@ $headHeight: 40px;
       height: $headHeight;
       line-height: $headHeight;
       display: flex;
+      align-items: center;
       border-bottom: 1px solid #d5d5d5;
       background-color: aliceblue;
       & > .flex {
@@ -223,4 +228,13 @@ $headHeight: 40px;
     }
   }
 }
+
+.fade-enter-active, .fade-leave-active {
+  transition: width .25s ease, opacity .25s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+  width: 0 !important;
+}
+
 </style>

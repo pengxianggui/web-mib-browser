@@ -1,11 +1,6 @@
 <template>
   <div class="web-ssh-term">
     <div class="terminal" :id="id"></div>
-    <div ref="history" class="history" v-show="history.visible">
-      <div class="history-item" :class="{'active': history.selectIndex === index}"
-           v-for="(item, index) in history.data" :key="index">{{ item }}
-      </div>
-    </div>
   </div>
 </template>
 
@@ -61,81 +56,18 @@ export default {
 
       window.addEventListener('resize', () => {
         this.fitAddon.fit()
+
       })
 
-      let commandBuffer = '' // 行缓冲
       this.term.onData(data => {
         if (!(this.socket && this.connected)) {
           return
         }
-        // 处理回车键（ASCII 13 或 \r）
-        if (data === '\r' || data === '\n') {
-          const selectedHistoryCommand = this.historySelected();
-          if (this.history.visible === true && selectedHistoryCommand !== undefined && commandBuffer === '') {
-            commandBuffer = selectedHistoryCommand
-            this.history.selectIndex = -1
-            this.term.write(commandBuffer)  // 回显字符
-          }
-          this.history.visible = false
-          if (commandBuffer === 'clear') {
-            this.term.clear()
-            commandBuffer = ''
-            this.socket.send(JSON.stringify({
-              type: 'command',
-              command: '\n'  // 添加换行符表示命令结束
-            }))
-            return;
-          }
-          // 发送完整命令
-          this.socket.send(JSON.stringify({
-            type: 'command',
-            command: commandBuffer + '\n'  // 添加换行符表示命令结束
-          }))
-          if (commandBuffer) {
-            this.history.data.push(commandBuffer)
-          }
-          commandBuffer = ''  // 清空缓冲区
-        } else if (data === '\t') { // 处理Tab键，以获取提示
-          this.socket.send(JSON.stringify({
-            type: 'command',
-            command: commandBuffer + '\t'  // 添加换行符表示命令结束
-          }))
-          commandBuffer = ''  // 清空缓冲区
-        } else if (data === '\x7f') {  // 处理退格键
-          if (commandBuffer.length > 0) {
-            commandBuffer = commandBuffer.substring(0, commandBuffer.length - 1)
-            // 移动光标并删除最后一个字符
-            this.term.write('\b \b')
-          }
-        } else if (data === '\x1b[A' || data === '\x1b[B') { // 处理上下键
-          this.selectHistory(data === '\x1b[A')
-        } else if (data.charCodeAt(0) >= 32 && data.charCodeAt(0) <= 126) {
-          // 只处理可打印字符（ASCII 32-126）
-          commandBuffer += data
-          this.term.write(data)  // 回显字符
-        }
+        this.socket.send(JSON.stringify({
+          type: 'command',
+          command: data  // 添加换行符表示命令结束
+        }))
       })
-    },
-    // 打开历史面板选择
-    selectHistory(up) {
-      if (this.history.data.length === 0) {
-        return
-      }
-      if (this.history.visible === false) {
-        this.history.visible = true;
-      }
-      if (up) {
-        this.history.selectIndex = (this.history.selectIndex - 1 + this.history.data.length) % this.history.data.length
-      } else {
-        this.history.selectIndex = (this.history.selectIndex + 1) % this.history.data.length
-      }
-    },
-    // 返回选中的历史命令
-    historySelected() {
-      if (this.history.data.length === 0) {
-        return undefined
-      }
-      return this.history.data[this.history.selectIndex]
     },
     connect() {
       if (!this.ip) {
@@ -190,14 +122,19 @@ export default {
 <style scoped lang="scss">
 .web-ssh-term {
   height: 100%;
+  position: relative;
 
   .terminal {
     width: 100%;
     height: 100%;
-    //height: calc(100%);
     background: #000;
     padding: 10px;
     box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   .history {
