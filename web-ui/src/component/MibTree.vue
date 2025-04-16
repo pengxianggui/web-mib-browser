@@ -1,7 +1,9 @@
 <template>
   <div class="mib-tree padding-5">
     <div class="opr" v-if="type">
-      <el-button type="text" class="el-icon-refresh" @click="getTreeData(type, true)"></el-button>
+      <el-tooltip placement="right" content="基于MIB文件重新生成节点树">
+        <el-button type="text" class="el-icon-refresh" @click="getTreeData(type, true)"></el-button>
+      </el-tooltip>
       <el-input class="search" v-model="filterText" size="small" clearable placeholder="过滤"></el-input>
       <el-button type="text" class="el-icon-arrow-down" @click="expandAll"></el-button>
       <el-button type="text" class="el-icon-arrow-left" @click="collapseAll"></el-button>
@@ -15,7 +17,8 @@
              :highlight-current="true"
              @node-contextmenu="rightButtonHandle"
              node-key="name"
-             @node-click="nodeClick">
+             @node-click="nodeClick"
+             empty-text = '请先选择mib类型'>
       <template #default="{ node, data }">
         <div :title="data.toolTipText">
           <i :class="getIconClass(node, data)"></i>&nbsp;
