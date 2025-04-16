@@ -56,16 +56,31 @@ export default {
 
       window.addEventListener('resize', () => {
         this.fitAddon.fit()
-
       })
 
+      let cacheInput = ''
       this.term.onData(data => {
-        if (!(this.socket && this.connected)) {
+        cacheInput = cacheInput + data
+        if (cacheInput.trim() === 'clear' && (data === '\r' || data === '\n')) {
+          for (let i = 0; i < cacheInput.length; i++) {
+            // 删除已经输入的clear
+            this.socket.send(JSON.stringify({
+              type: 'command',
+              command: '\x7f'
+            }))
+          }
+          this.term.clear()
+          cacheInput = ''
           return
         }
+
+        if (data === '\r' || data === '\n') {
+          cacheInput = ''
+        }
+
         this.socket.send(JSON.stringify({
           type: 'command',
-          command: data  // 添加换行符表示命令结束
+          command: data
         }))
       })
     },
