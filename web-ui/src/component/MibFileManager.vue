@@ -17,7 +17,8 @@ export default {
     return {
       tableOption: new FastTableOption({
         context: this,
-        module: 'mib_file'
+        module: 'mib_file',
+        sortField: 'createdTime'
       }),
       responseHandler: function (response) {
         return response.data

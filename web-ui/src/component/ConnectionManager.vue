@@ -36,6 +36,7 @@ export default {
         insertFail: () => Promise.reject(),
         updateFail: () => Promise.reject(),
         loadFail: () => Promise.reject(),
+        sortField: 'createdTime'
       })
     }
   },
