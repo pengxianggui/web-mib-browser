@@ -1,6 +1,7 @@
 package com.zjs.web_mib_browser.telnet;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.telnet.*;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -15,6 +16,7 @@ import java.io.OutputStream;
  * @author pengxg
  * @date 2025-04-07 13:33
  */
+@Slf4j
 public class TelnetConnection {
     private final WebSocketSession session;
     private final String host;
@@ -26,9 +28,6 @@ public class TelnetConnection {
     private InputStream in;
     private OutputStream out;
     private Thread readThread;
-
-    // 最后输入的命令——处理回显
-    private String lastCommand = "";
 
     public TelnetConnection(WebSocketSession session, String host, int port,
                             String username, String password) {
@@ -42,9 +41,6 @@ public class TelnetConnection {
     public void connect() throws IOException, InterruptedException, InvalidTelnetOptionException {
         telnet = new TelnetClient();
         telnet.setConnectTimeout(10000); // 10秒连接超时
-        // 禁用回显
-        TelnetOptionHandler echoOption = new EchoOptionHandler();
-        telnet.addOptionHandler(echoOption);
         telnet.connect(host, port);
 
         in = telnet.getInputStream();
@@ -87,6 +83,18 @@ public class TelnetConnection {
         throw new IOException("等待提示超时: " + prompt);
     }
 
+    public void sendCommand(String command) throws IOException {
+        if (out != null && telnet.isConnected()) {
+            // 将command末尾可能的\r换成\r\n
+            if (command.endsWith("\r")) {
+                command = command.substring(0, command.length() - 1);
+                command = command + "\r\n";
+            }
+            out.write((command).getBytes());
+            out.flush();
+        }
+    }
+
     private void readFromTelnet() {
         byte[] buffer = new byte[1024];
         try {
@@ -106,13 +114,6 @@ public class TelnetConnection {
         }
     }
 
-    public void sendCommand(String command) throws IOException {
-        if (out != null && telnet.isConnected()) {
-            out.write((command).getBytes());
-            out.flush();
-        }
-    }
-
     public void disconnect() {
         if (readThread != null) {
             readThread.interrupt();
@@ -122,7 +123,7 @@ public class TelnetConnection {
                 telnet.disconnect();
             }
         } catch (IOException e) {
-            // 忽略关闭时的异常
+            log.error("disconnect error", e);
         }
     }
 

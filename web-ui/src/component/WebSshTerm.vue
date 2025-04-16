@@ -32,7 +32,6 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.initTerminal()
-      this.connect()
     })
   },
   beforeDestroy() {
@@ -58,64 +57,58 @@ export default {
         this.fitAddon.fit()
       })
 
+      let isPasswordMode = false
       let cacheInput = ''
       this.term.onData(data => {
+        const enter = (data === '\r' || data === '\n')
         cacheInput = cacheInput + data
-        if (cacheInput.trim() === 'clear' && (data === '\r' || data === '\n')) {
+        if (enter && cacheInput.trim() === 'clear') { // 处理自定义指令clear
           for (let i = 0; i < cacheInput.length; i++) {
-            // 删除已经输入的clear
-            this.socket.send(JSON.stringify({
-              type: 'command',
-              command: '\x7f'
-            }))
+            this.socket.send('\x7f') // 删除已经输入的clear
           }
           this.term.clear()
           cacheInput = ''
           return
         }
 
-        if (data === '\r' || data === '\n') {
-          cacheInput = ''
+        if (isPasswordMode) {
+          if (enter) {
+            this.socket.send(cacheInput)
+            isPasswordMode = false
+          }
+          return;
         }
 
-        this.socket.send(JSON.stringify({
-          type: 'command',
-          command: data
-        }))
+        if (enter) {
+          cacheInput = ''
+          isPasswordMode = false
+        }
+
+        this.socket.send(data)
       })
-    },
-    connect() {
+
       if (!this.ip) {
         Message.warning('缺少ip地址')
         return
       }
-
-      const wsUrl = `ws://${window.location.host}/webssh`
+      const wsUrl = `ws://${window.location.host}/webssh?ip=${this.ip}`
       this.socket = new WebSocket(wsUrl)
-
       this.socket.onopen = () => {
-        this.socket.send(JSON.stringify({
-          type: 'connect',
-          ip: this.ip
-        }))
-
-        // const attachAddon = new AttachAddon(this.socket)
-        // this.term.loadAddon(attachAddon)
-
-        // 接收服务器返回的数据
-        this.socket.onmessage = (event) => {
-          this.term.write(event.data)
-        }
-
         this.connected = true
         this.term.focus()
       }
-
+      // 接收服务器返回的数据
+      this.socket.onmessage = (e) => {
+        isPasswordMode = e.data.toLowerCase().includes('password:')
+        if (isPasswordMode) {
+          console.log('等候输入密码..')
+        }
+        this.term.write(e.data)
+      }
       this.socket.onclose = () => {
         this.connected = false
         this.term.writeln('\r\nSSH连接已关闭')
       }
-
       this.socket.onerror = (error) => {
         console.error('WebSocket错误:', error)
         this.term.writeln('\r\nSSH连接错误')
@@ -150,24 +143,6 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-  }
-
-  .history {
-    position: absolute;
-    min-height: 100px;
-    max-height: 300px;
-    width: 300px;
-    top: 30px;
-    right: 50px;
-    background-color: rgba(91, 91, 91, 0.5);
-    text-align: left;
-    padding: 5px 10px;
-    color: #9d9d9d;
-    overflow: hidden auto;
-
-    & > .active {
-      color: #f3f397;
-    }
   }
 }
 </style>
