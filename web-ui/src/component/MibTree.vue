@@ -46,6 +46,7 @@
 <script>
 import NodeInfo from "@/component/NodeInfo.vue";
 import $http from '@/http'
+import { debounce } from "lodash";
 
 export default {
   name: "MibTree",
@@ -78,9 +79,9 @@ export default {
       }
       this.getTreeData(newV)
     },
-    filterText(newV) {
+    filterText: debounce(function (newV) {
       this.$refs.tree.filter(newV)
-    }
+    }, 500) // 防抖
   },
   methods: {
     getTreeData(type, invalidCache = false) {
@@ -91,9 +92,20 @@ export default {
         this.treeData = [res.data]
       })
     },
-    filterNode(value, data) {
+    filterNode(value, data, node) {
       if (!value) return true;
-      return data.name.indexOf(value) !== -1;
+      function getNode(n, arr, v) {
+        const hit = n && n.data && n.data.name && n.data.name.indexOf(v) !== -1;
+        if (hit) {
+          arr.push(hit)
+        }
+        if (!hit && n.parent){
+          getNode(n.parent, arr, value)
+        }
+      }
+      let arr = []
+      getNode(node, arr, value)
+      return arr.some(r => r === true)
     },
     getIconClass(node, data) {
       const {nodeType, canWrite} = data
@@ -116,7 +128,7 @@ export default {
       this.$emit('nodeClick', nodeData)
     },
     setActiveNode(nodeName) {
-      if (this.treeData.length === 0) {
+      if (this.treeData.length === 0 || !nodeName) {
         return;
       }
       this.$refs.tree.setCurrentKey(nodeName)

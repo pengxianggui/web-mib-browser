@@ -15,6 +15,7 @@
     "core-js": "^3.8.3",
     "element-ui": "^2.15.14",
     "fast-crud-ui": "^1.1.6",
+    "lodash": "^4.17.21",
     "nprogress": "^0.2.0",
     "sass": "^1.86.0",
     "sass-loader": "^16.0.5",

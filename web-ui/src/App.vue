@@ -94,10 +94,10 @@ export default {
     },
     nodeClick(nodeData) {
       this.selectNode = nodeData;
-      this.updateQueryParam("selectNodeName", this.activeTableName)
       if (nodeData != null) {
         this.activeTableName = nodeData ? nodeData.name : null;
       }
+      this.updateQueryParam("selectNodeName", this.activeTableName)
     },
     executeMibNodeOperate(nodeData, operate) {
       if (!this.ip) {
