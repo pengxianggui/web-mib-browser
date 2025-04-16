@@ -11,6 +11,7 @@ import io.github.pengxianggui.crud.BaseServiceImpl;
 import io.github.pengxianggui.crud.wrapper.UpdateModelWrapper;
 import net.percederberg.mibble.MibLoaderException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -116,5 +117,12 @@ public class MibFileServiceImpl extends BaseServiceImpl<MibFile, MibFileMapper> 
         tree = MibUtil.buildTree(file);
         TREE_CACHE.put(type, tree);
         return tree;
+    }
+
+    @Override
+    public String upload(String row, String col, MultipartFile file) throws IOException {
+        String url = super.upload(row, col, file);
+        TREE_CACHE.clear();
+        return url;
     }
 }
